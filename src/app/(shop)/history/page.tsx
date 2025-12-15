@@ -52,7 +52,7 @@ export default function History() {
               />
             </div>
           </div>
-          <div className="font-semibold">Taufan Fadhilah</div>
+          <div className="font-semibold">Farhan Harits</div>
           <div className="flex items-center justify-center">
             <div className="w-[14px] h-[20px] relative mr-2">
               <Image src={GoldBadge} layout="fill" alt="" objectFit="cover" />
