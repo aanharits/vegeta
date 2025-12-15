@@ -16,11 +16,11 @@ export default function Home() {
     <main className="flex flex-col w-full min-h-screen items-center pb-8">
       <div className="w-content">
         <div className="py-8 flex justify-center">
-          <div className="w-content relative image-banner">
+          {/* <div className="w-content relative image-banner">
             <AspectRatio ratio={936 / 294}>
               <Image src={ImageBanner} layout="fill" alt="" objectFit="cover" />
             </AspectRatio>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col">
