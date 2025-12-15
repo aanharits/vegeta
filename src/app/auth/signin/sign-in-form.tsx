@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { hover } from "@/lib/hover";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SignInSchema } from "@/validations/auth-validations";
