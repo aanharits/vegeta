@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/legacy/image";
 
 // components
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import CommonStepper from "@/components/common/common-stepper";
 import { ProductDetails } from "@/components/product/product-card";
 
@@ -12,29 +11,28 @@ import { ProductDetails } from "@/components/product/product-card";
 import { formatNumber } from "@/lib/utils";
 
 interface CheckoutProps {
-  isChecked?: boolean;
   productDetails: ProductDetails;
+  qty: number;
   onChangeItemCount: (count: number) => void;
   onDeleteItem: () => void;
 }
 
 const ProductCheckout: React.FC<CheckoutProps> = ({
-  isChecked,
   productDetails,
+  qty,
   onDeleteItem,
   onChangeItemCount,
 }: CheckoutProps) => {
-  const [itemCount, setItemCount] = useState(productDetails.itemCount || 1);
+  const [itemCount, setItemCount] = useState(qty || 1);
+
+  useEffect(() => {
+    setItemCount(qty || 1);
+  }, [qty]);
 
   return (
     <>
       <div className="w-full">
         <div className="flex gap-6 items-center">
-          <Checkbox
-            className="w-6 h-6 border-2 border-leaf data-[state=checked]:bg-leaf data-[state=checked]:text-primary-foreground"
-            id={"product-1"}
-            checked={isChecked}
-          />
           <div className="p-1 border rounded-lg">
             <div className="w-[80px] h-[80px] relative">
               <Image
@@ -47,7 +45,7 @@ const ProductCheckout: React.FC<CheckoutProps> = ({
           </div>
           <div className="flex flex-1 flex-col justify-center gap-2">
             <div>{productDetails.name}</div>
-            <div className="font-semibold">
+            <div className="font-semibold text-leaf">
               Rp {formatNumber(productDetails.price)}
             </div>
           </div>
@@ -59,7 +57,7 @@ const ProductCheckout: React.FC<CheckoutProps> = ({
             }}
           />
           <Button
-            className="text-red-400 border-0 bg-white font-regular"
+            className="text-red-400 border-0 bg-white font-regular hover:bg-red-50"
             onClick={() => onDeleteItem()}
           >
             Hapus

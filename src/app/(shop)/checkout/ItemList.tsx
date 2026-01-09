@@ -1,52 +1,48 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 // components
 import ProductCheckout from "@/components/product-checkout/product-checkout";
-import { ProductDetails } from "@/components/product/product-card";
+import { Product } from "@prisma/client";
 
-function ItemList() {
-  const [products, setProducts] = useState<ProductDetails[]>([
-    {
-      img: "/vegetables.jpeg",
-      price: 40000,
-      rating: 4.9,
-      sold: 40,
-      name: "Kembang Kol",
-      unit: "kg",
-      itemCount: 1,
-    },
-    {
-      img: "/vegetables.jpeg",
-      price: 25000,
-      rating: 4.9,
-      sold: 40,
-      name: "Kentang Gondangdia",
-      unit: "kg",
-      itemCount: 2,
-    },
-  ]);
+interface CheckoutItem {
+  id: string;
+  userId: string;
+  productId: string;
+  qty: number;
+  pricePerItem: number;
+  createdAt: Date;
+  updatedAt: Date;
+  product: Product;
+}
+
+interface ItemListProps {
+  products: CheckoutItem[];
+  onChangeItemCount: (id: string, count: number) => void;
+  onDeleteItem: (id: string) => void;
+}
+
+function ItemList({
+  products = [],
+  onChangeItemCount,
+  onDeleteItem,
+}: ItemListProps) {
   return (
     <>
       <div className="text-lg font-semibold">Barang yang dibeli</div>
 
-      {products.map((product, index) => (
-        <ProductCheckout
-          key={`productCheckout${index}`}
-          productDetails={product}
-          onDeleteItem={() => {
-            const updatedProducts = [...products];
-            updatedProducts.splice(index, 1);
-            setProducts(updatedProducts);
-          }}
-          onChangeItemCount={(count) => {
-            const updatedProducts = [...products];
-            updatedProducts[index].itemCount = count;
-            setProducts(updatedProducts);
-          }}
-        />
-      ))}
+      <div className="flex flex-col gap-4 mt-4">
+        {products.map((product) => (
+          <ProductCheckout
+            key={product.id}
+            productDetails={product.product}
+            onDeleteItem={() => onDeleteItem(product.id)}
+            onChangeItemCount={(count) => onChangeItemCount(product.id, count)}
+            qty={product.qty}
+          />
+        ))}
+      </div>
     </>
   );
 }
