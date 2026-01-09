@@ -1,5 +1,7 @@
+import Image from "next/legacy/image";
+
 // components
-import { LogoVegeta } from "@/components/icons";
+// import { LogoVegeta } from "@/components/icons"; // Hapus ini
 
 // assets
 import bgAuth from "@/assets/images/bg-authentication.jpg";
@@ -20,7 +22,16 @@ function Layout({ children }: { children: React.ReactNode }) {
               backgroundSize: "cover",
             }}
           >
-            <LogoVegeta className="w-[201px] h-[52px]" />
+            
+            <div className="relative w-[201px] h-[52px]">
+              <Image
+                src="/logo-sayurhub.png"
+                layout="fill"
+                objectFit="contain"
+                alt="Logo Sayurhub"
+                priority
+              />
+            </div>
           </div>
         </div>
         <div className="bg-white rounded-[26px] flex flex-1 ml-[-26px] z-10 justify-center items-center">

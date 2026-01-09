@@ -4,15 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { hover } from "@/lib/hover";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SignInSchema } from "@/validations/auth-validations";
 import { LoginForm } from "@/types/auth";
+import { signIn } from "next-auth/react";
 
 function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { toast } = useToast();
 
   const {
     register,
@@ -22,8 +27,30 @@ function SignInForm() {
     resolver: yupResolver(SignInSchema),
   });
 
-  const onSubmit = (data: LoginForm) => {
-    console.log("data: ", data);
+  const onSubmit = async (data: LoginForm) => {
+    try {
+      const user = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        callbackUrl: searchParams.get("callbackUrl") || "/",
+        redirect: false,
+      });
+      console.log("user", user);
+
+      if (!user?.error) {
+        router.push(user?.url || "/");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Something went wrong",
+          description: "Please check your email and password",
+          duration: 2000,
+        });
+      }
+
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   return (

@@ -9,10 +9,17 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SignUpSchema } from "@/validations/auth-validations";
 import { RegisterForm } from "@/types/auth";
+import { useRegisterMutation } from "@/services/auth";
+import { signIn } from "next-auth/react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmationPassword, setShowConfirmationPassword] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { toast } = useToast();
 
   const {
     register,
@@ -22,13 +29,36 @@ function SignUpForm() {
     resolver: yupResolver(SignUpSchema),
   });
 
-  const onSubmit = (data: RegisterForm) => {
-    console.log("data: ", data);
+  const [registerMutation] = useRegisterMutation();
+
+  const onSubmit = async(data: RegisterForm) => {
+    try {
+      const res = await registerMutation(data).unwrap();
+      
+      if (res.success) {
+        const user = await signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          callbackUrl: searchParams.get("callbackUrl") || "/",
+          redirect: false,
+        });
+        
+        router.push(user?.url || "/");
+      } else {
+          toast({
+            variant: "destructive",
+            title: "Something went wrong",
+            description: "Please check your email and password",
+            duration: 2000,
+          });
+        }
+    } catch (error) {
+      console.log("error: ", error);
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-[100%] gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-[100%] gap-4">
       <div className="w-[100%] text-3xl font-semibold tracking-widest mb-2 mt-14 text-center">
         Buat akun baru
       </div>
