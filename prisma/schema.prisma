@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum ProductCategory {
@@ -41,10 +42,10 @@ model Product {
   id          String          @id @default(cuid())
   name        String          @unique
   img         String
-  description String          @db.LongText
-  price       Int             @default(0) @db.UnsignedInt
-  itemSold    Int             @default(0) @map("item_sold") @db.UnsignedInt
-  rating      Int             @default(5) @db.UnsignedInt
+  description String          @db.Text
+  price       Int             @default(0)
+  itemSold    Int             @default(0) @map("item_sold")
+  rating      Int             @default(5)
   category    ProductCategory
   createdAt   DateTime        @default(now()) @map("created_at")
   updatedAt   DateTime        @updatedAt @map("updated_at")
@@ -58,8 +59,8 @@ model Checkout {
   userId        String   @map("user_id")
   productId     String   @map("product_id")
   transactionId String?  @map("transaction_id")
-  qty           Int      @default(0) @db.UnsignedInt
-  pricePerItem  Int      @default(0) @map("price_per_item") @db.UnsignedInt
+  qty           Int      @default(0)
+  pricePerItem  Int      @default(0) @map("price_per_item")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
@@ -73,11 +74,11 @@ model Checkout {
 model Transaction {
   id              String       @id @default(cuid())
   userId          String       @map("user_id")
-  totalPrice      Int          @default(0) @map("total_price") @db.UnsignedInt
-  deliveryFee     Int          @default(0) @map("delivery_fee") @db.UnsignedInt
-  asuranceFee     Int          @default(0) @map("asurance_fee") @db.UnsignedInt
-  applicationFee  Int          @default(0) @map("application_fee") @db.UnsignedInt
-  grandTotalPrice Int          @default(0) @map("grand_total_price") @db.UnsignedInt
+  totalPrice      Int          @default(0) @map("total_price")
+  deliveryFee     Int          @default(0) @map("delivery_fee")
+  asuranceFee     Int          @default(0) @map("asurance_fee")
+  applicationFee  Int          @default(0) @map("application_fee")
+  grandTotalPrice Int          @default(0) @map("grand_total_price")
   deliveryType    DeliveryType @default(HOME_DELIVERY) @map("delivery_type")
   createdAt       DateTime     @default(now()) @map("created_at")
   updatedAt       DateTime     @updatedAt @map("updated_at")
