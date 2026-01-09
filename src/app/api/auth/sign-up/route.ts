@@ -1,7 +1,7 @@
 import Response from "@/lib/api.response";
 import { prisma } from "@/lib/prisma";
 import { Prisma, User } from "@prisma/client";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
     try {
