@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/legacy/image";
 import Link from "next/link";
 
@@ -8,19 +10,23 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 // assets
 import ProductCategoryJSON from "@/assets/json/product-category.json";
-import ProductsJSON from "@/assets/json/products.json";
 import ImageBanner from "@/assets/images/image-banner.png";
 
+// services
+import { useGetAllProductsQuery } from "@/services/product";
+
 export default function Home() {
+  const { data, isLoading } = useGetAllProductsQuery({})
+
   return (
     <main className="flex flex-col w-full min-h-screen items-center pb-8">
       <div className="w-content">
         <div className="py-8 flex justify-center">
-          {/* <div className="w-content relative image-banner">
-            <AspectRatio ratio={936 / 294}>
-              <Image src={ImageBanner} layout="fill" alt="" objectFit="cover" />
+          <div className="w-content relative image-banner">
+            <AspectRatio ratio={1000 / 420}>
+              <Image src={ImageBanner} layout="fill" alt="" objectFit="cover" className="rounded-xl"/>
             </AspectRatio>
-          </div> */}
+          </div>
         </div>
 
         <div className="flex flex-col">
@@ -35,7 +41,11 @@ export default function Home() {
               Lihat Selengkapnya {">"}
             </Link>
           </div>
-          <ProductShowcase gridConfig={"grid-cols-4"} products={ProductsJSON} />
+          <ProductShowcase
+            gridConfig={"grid-cols-4"}
+            products={data?.data?.data?.slice(0, 4) || []} 
+            isLoading={isLoading}
+          />
         </div>
 
         <div className="mt-8">
@@ -43,9 +53,10 @@ export default function Home() {
             Produk berdasarkan kategori
           </div>
 
-          <div className="mt-4 grid grid-cols-3 gap-6">
+          <div
+            className="mt-4 grid grid-cols-3 gap-6">
             {ProductCategoryJSON.map((category) => (
-              <ProductCategory
+              <ProductCategory 
                 key={`productCategory${category.id}`}
                 id={category.id}
                 title={category.title}
@@ -60,7 +71,7 @@ export default function Home() {
           <div className="text-leaf text-3xl font-semibold">Tentang Kami</div>
           <div className="flex flex-col mt-6 gap-8 text-gray-400">
             <p>
-              Selamat datang di Vegeta, destinasi terbaik untuk aneka sayuran
+              Selamat datang di SayurHub, destinasi terbaik untuk aneka sayuran
               dan buah segar siap kirim ke seluruh Indonesia! Kami dengan bangga
               mempersembahkan diri sebagai tim yang berdedikasi untuk memberikan
               kualitas terbaik dan pilihan yang beragam untuk kebutuhan sayuran
