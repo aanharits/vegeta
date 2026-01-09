@@ -27,8 +27,9 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { LogoVegeta } from "@/components/icons";
+// LogoVegeta import dihapus karena kita ganti pakai Image langsung
 import CommonNotificationBadge from "@/components/common/common-notification-badge";
+import footerBg from "@/assets/images/footer-bg.jpg";
 
 // utils
 import { cn } from "@/lib/utils";
@@ -41,17 +42,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-interface HeaderProps {}
+import { signOut, useSession } from "next-auth/react";
+import { useCheckoutsQuery } from "@/services/transaction";
+
+interface HeaderProps { }
 
 const CommonHeader: React.FC<HeaderProps> = () => {
-  const isLoggedIn = true;
+  const { data: session } = useSession();
+  const { data: checkoutsData } = useCheckoutsQuery(undefined, {
+    skip: !session?.user,
+  });
+  const cartItemCount = checkoutsData?.data?.length || 0;
 
   return (
     <>
-      <div className="w-extra flex flex-col items-center">
+      <div
+        className="flex flex-col items-center w-extra bg-satin sticky top-0 z-50"
+        style={{
+          backgroundImage: `url(${footerBg.src})`,
+          backgroundSize: "cover",
+        }}>
         <div className="flex w-content py-4 items-center">
           <Link href="/">
-            <LogoVegeta className="w-[124px] h-[28px]" />
+            <div className="relative w-[155px] h-[42px]">
+              <Image
+                src="/logo-sayurhub.png"
+                layout="fill"
+                objectFit="contain"
+                alt="Logo SayurHub"
+                priority
+              />
+            </div>
           </Link>
 
           <div className="flex flex-1 justify-center">
@@ -62,22 +83,10 @@ const CommonHeader: React.FC<HeaderProps> = () => {
                     <NavigationMenuLink
                       className={cn(
                         navigationMenuTriggerStyle(),
-                        "font-normal"
+                        "font-normal",
                       )}
                     >
                       Beranda
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link href="/" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        "font-normal"
-                      )}
-                    >
-                      Tentang Kami
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -94,14 +103,14 @@ const CommonHeader: React.FC<HeaderProps> = () => {
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="/" legacyBehavior passHref>
+                  <Link href="/history" legacyBehavior passHref>
                     <NavigationMenuLink
                       className={cn(
                         navigationMenuTriggerStyle(),
                         "font-normal"
                       )}
                     >
-                      Belanja
+                      Riwayat Belanja
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -109,9 +118,24 @@ const CommonHeader: React.FC<HeaderProps> = () => {
             </NavigationMenu>
           </div>
 
-          {isLoggedIn ? (
+          {session?.user ? (
             <div className="flex gap-4 items-center">
-              <CommonNotificationBadge
+              <Link
+                href={"/checkout"}
+                className={cn(
+                  "flex items-center text-neutral-600 font-regular p-0",
+                  hover.shadow
+                )}
+              >
+                <CommonNotificationBadge
+                  notificationDetail={{ color: "bg-carrot", count: cartItemCount > 0 ? cartItemCount : undefined }}
+                >
+                  <IconCart className="w-5 h-5" stroke="leaf" />
+                </CommonNotificationBadge>
+                <span className="pl-2">Keranjang</span>
+              </Link>
+
+              {/* <CommonNotificationBadge
                 notificationDetail={{ color: "bg-leaf", count: 2 }}
               >
                 <IconMessage
@@ -127,10 +151,10 @@ const CommonHeader: React.FC<HeaderProps> = () => {
                   className={cn("w-6 h-6", hover.shadow)}
                   stroke="text-black"
                 />
-              </CommonNotificationBadge>
+              </CommonNotificationBadge> */}
               <div className="w-[42px] h-[42px] rounded-full relative overflow-hidden">
                 <Image
-                  src="https://ui-avatars.com/api/?name=Taufan+Fadhilah&background=random"
+                  src={`https://ui-avatars.com/api/?name=${session.user.name}&background=random`}
                   layout="fill"
                   alt=""
                   objectFit="cover"
@@ -139,7 +163,7 @@ const CommonHeader: React.FC<HeaderProps> = () => {
 
               <div className="flex flex-col w-[127px] justify-center">
                 <div className="text-xs">Hi, Apa Kabar?</div>
-                <div className="text-sm font-semibold">Taufan Fadhillah</div>
+                <div className="text-sm font-semibold">{session.user.name}</div>
               </div>
 
               <DropdownMenu>
@@ -150,33 +174,43 @@ const CommonHeader: React.FC<HeaderProps> = () => {
                   />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>
+                  {/* <DropdownMenuItem>
                     <Link href="/history">History Transactions</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href="/auth/signin">Logout</Link>
+                  </DropdownMenuItem> */}
+                  <DropdownMenuItem
+                    onClick={() =>
+                      signOut({
+                        callbackUrl: "/auth/signin",
+                      })
+                    }>
+                    Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
           ) : (
             <div className="flex gap-6">
-              <Button
-                className={cn("py-1 px-7 bg-leaf leading-4", hover.shadow)}
-              >
-                Daftar Sekarang
-              </Button>
-              <Button
-                className={cn("py-1 px-7 bg-carrot leading-4", hover.shadow)}
-              >
-                Masuk akun
-              </Button>
+              <Link href="/auth/signup">
+                <Button
+                  className={cn("py-1 px-7 bg-leaf leading-4", hover.shadow)}
+                >
+                  Daftar Akun
+                </Button>
+              </Link>
+
+              <Link href="/auth/signin">
+                <Button
+                  className={cn("py-1 px-7 bg-carrot leading-4", hover.shadow)}
+                >
+                  Masuk Akun
+                </Button>
+              </Link>
             </div>
           )}
         </div>
         <div className="w-extra separator" />
-        <div className="flex w-content py-3 justify-between items-center">
-          <div className="flex">
+        <div className="flex w-content justify-between items-center">
+          {/* <div className="flex">
             <Select defaultValue={"semua-kategori"}>
               <SelectTrigger
                 className={cn(
@@ -200,9 +234,9 @@ const CommonHeader: React.FC<HeaderProps> = () => {
                 suffix="Magnifier"
               />
             </div>
-          </div>
+          </div> */}
 
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             <Link
               href={"/product"}
               className={cn(
@@ -231,9 +265,8 @@ const CommonHeader: React.FC<HeaderProps> = () => {
               </CommonNotificationBadge>
               <span className="pl-2">Keranjang</span>
             </Link>
-          </div>
+          </div> */}
         </div>
-        <div className="w-extra separator" />
       </div>
     </>
   );

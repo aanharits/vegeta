@@ -13,7 +13,7 @@
     --satin: #FFF8ED;
     --pear: #FEC078;
     --pink: #EFB1C0;
-    --larima:  #98D4BB;
+    --larima: #98D4BB;
     --antilles: #8DA47E;
     --cracker: #D2B18A;
     --gloves: #B5AFAF;
@@ -61,6 +61,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

@@ -15,11 +15,10 @@ import {
   IconTwitter,
   IconYoutube,
 } from "@/components/icons";
-import { LogoVegeta } from "@/components/icons";
 
 // assets
 import footerBg from "@/assets/images/footer-bg.jpg";
-import FooterIllustration from "@/assets/images/footer-illustration.png";
+
 import LogoPlayStore from "@/assets/images/play-store.png";
 import LogoAppStore from "@/assets/images/app-store.png";
 
@@ -48,7 +47,7 @@ const CommonFooter: React.FC<HeaderProps> = () => {
                 </div>
                 <div className="text-xl text-gray-400 font-light">
                   Mulai berbelanja dengan{" "}
-                  <span className="text-carrot font-bold">Vegeta</span>
+                  <span className="text-leaf font-bold">SayurHub</span>
                 </div>
               </div>
 
@@ -62,13 +61,13 @@ const CommonFooter: React.FC<HeaderProps> = () => {
                 type="text"
                 placeholder="Masukkan nomor telepon"
               />
-              <Button className={cn("py-2 px-7 bg-carrot", hover.shadow)}>
+              <Button className={cn("py-2 px-7 bg-leaf", hover.shadow)}>
                 Subscribe
               </Button>
             </div>
 
             <Image
-              src={FooterIllustration}
+              src="/footer-illustration.png"
               width={280}
               height={280}
               alt=""
@@ -77,11 +76,24 @@ const CommonFooter: React.FC<HeaderProps> = () => {
           </div>
         </div>
 
-        <div className="flex w-extra py-4 items-center justify-center bg-satin">
+        <div
+          className="flex w-extra py-4 items-center justify-center"
+          style={{
+            backgroundImage: `url(${footerBg.src})`,
+            backgroundSize: "cover",
+          }}>
           <div className="w-content py-9">
             <div className="flex">
               <div className="flex flex-col gap-5 grow-[2]">
-                <LogoVegeta className="w-[166px] h-[43px]" />
+
+                <div className="relative w-[166px] h-[45px]">
+                  <Image
+                    src="/logo-sayurhub.png"
+                    layout="fill"
+                    objectFit="contain"
+                    alt=""
+                  />
+                </div>
 
                 <div className="flex gap-2">
                   <Link href="/">
@@ -107,11 +119,11 @@ const CommonFooter: React.FC<HeaderProps> = () => {
                   </Link>
                   <Link className="flex gap-2" href="/">
                     <IconLocation className="w-6 h-6" />{" "}
-                    <span>Jl. Cendrawasin No. 10 Klojen Malang</span>
+                    <span>Jl. Rumdon </span>
                   </Link>
                   <Link className="flex gap-2" href="/">
                     <IconSchedule className="w-6 h-6" />{" "}
-                    <span>10.00-18.00, Senin-Minggu</span>
+                    <span>Buka Terus</span>
                   </Link>
                 </div>
               </div>
@@ -166,17 +178,15 @@ const CommonFooter: React.FC<HeaderProps> = () => {
           <div className="w-content separator mb-5" />
           <div className="w-content flex justify-between">
             <div className="">
-              Copyright © 2023{" "}
-              <Link className="text-carrot" href={"/"}>
-                Vegeta
+              Copyright © 2026{" "}
+              <Link className="text-leaf" href={"/"}>
+                SayurHub
               </Link>{" "}
               All Right Reserved
             </div>
             <div className="">
               Made by{" "}
-              <a href="https://taufanfadhilah.web.id/">
-                <span className="text-leaf">@taufanfadhilah</span>
-              </a>
+                <span className="text-leaf">@SayurHub</span>
             </div>
           </div>
         </div>
